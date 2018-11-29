@@ -1,0 +1,67 @@
+.flexbox-container {
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.container-flexbox {
+    margin-top: 10px;
+    flex-wrap: wrap;
+    display: flex;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.btn-divide-page {
+    float: right;
+    margin-top: 40px;
+    padding: 0;
+}
+
+.title {
+    text-overflow: ellipsis;
+    text-align: left;
+    margin: 10px auto 0;
+    letter-spacing: .1px;
+    font-size: 14px;
+    color: #242424;
+    overflow: hidden;
+    height: 60px;
+    display: block;
+}
+
+.image {
+    overflow: hidden;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    background: #fff;
+    height: 200px;
+    white-space: nowrap;
+}
+
+.image img {
+    width: 100%;
+}
+
+.box {
+    display: inline-block;
+    /* height: 375px; */
+    margin: 5px;
+    box-shadow: initial;
+    background: white;
+    width: 23%;
+    padding: 20px 10px;
+}
+
+.box:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, .3);
+}
+
+.product-box{
+  
+    margin-left: 10px;
+    
+}

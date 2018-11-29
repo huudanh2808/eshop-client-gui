@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{title}}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="shortcut icon" type="image/png" href="{{layoutVM.imageUrl}}/logo.png" />
+
+  <link rel="stylesheet" href="/stylesheets/global_style.css">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+    crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+  <script src="/stylesheets/assets/responsive-paginate.js"></script>
+
+  <script src='https://www.google.com/recaptcha/api.js'></script> {{{block "pageCSS"}}}
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top navbar-light color_navbar">
+    <a class="navbar-brand" href="/">
+      <img src="{{layoutVM.imageUrl}}/logo.png" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="mr-auto mt-2 mt-lg-0" style="display: flex;">
+        <!--BEGIN AN-MT: them tìm kiếm -->
+        <form class="form-inline" method="get" action="/search/normal">
+          <input class="form-control mr-sm-2" style="min-width: 300px;" type="search" placeholder="Tìm sản phẩm..." aria-label="Search"
+            name="q">
+          <button class="btn btn-danger my-2 my-sm-0" type="submit">
+            <i>
+              <img src="{{layoutVM.imageUrl}}/search.png" />
+            </i>
+            <span>Tìm kiếm</span>
+          </button>
+        </form>
+        <!--END AN-MT: them tìm kiếm -->
+        <button class="btn btn-danger advance_search" id="btnAdvanceSearch">
+          <i>
+            <img src="{{layoutVM.imageUrl}}/search.png" />
+          </i>
+          <span>Nâng cao</span>
+        </button>
+      </div>
+
+      <div class="navbar-nav my-2 my-lg-0">
+        {{#if layoutVM.isLogged}}
+        <div style="display: block; margin: auto 20px;">
+          <a class="check_out" href="/cart">
+            <i>
+              <img src="{{layoutVM.imageUrl}}/checkout.png" />
+            </i>
+            <span class="text">Giỏ hàng</span>
+            <span class="count">{{layoutVM.countCart}}</span>
+          </a>
+        </div>
+        <div class="nav-item dropdown" style="display: block; margin: auto 20px;">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            <button class="btn btn-primary">
+              <i>
+                <img src="{{layoutVM.imageUrl}}/user.png" />
+              </i>
+              <span>Chào, {{layoutVM.curUser.name}}</span>
+            </button>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/account/profile">Tài khoản của tôi</a>
+            <a class="dropdown-item" href="/history">Đơn hàng của tôi</a>
+            <div class="dropdown-divider"></div>
+            <form action="/account/logout" method="POST">
+              <a class="dropdown-item" onclick="this.parentNode.submit()" href="#">Thoát tài khoản</a>
+            </form>
+          </div>
+        </div>
+        {{else}}
+        <div style="display: block; margin: auto 20px;">
+          <button class="btn btn-primary" id="btnLogin">
+            <i>
+              <img src="{{layoutVM.imageUrl}}/user.png" />
+            </i>
+            <span>Đăng nhập</span>
+          </button>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </nav>
+
+  {{{body}}}
+
+  <div style="clear: both;"></div>
+  <div class="web_footer_wraper">
+    <div class="color_footer">
+      <div>Copyright © 2018. Đây là một sản phẩm của nhóm LTUDWeb - CNTT KHTN K2015</div>
+    </div>
+  </div>
+</body>
+
+<script>
+  $(document).ready(function () {
+    $(".pagination").rPage();
+
+    $('#btnLogin').click(function () {
+      $("#modalLogin").modal('show');
+    });
+
+    $("#tabLogIn").click(function () {
+      $("#myModalLoginTitle").text("Đăng nhập");
+    });
+
+    $("#tabSignUp").click(function () {
+      $("#myModalLoginTitle").text("Đăng ký");
+    });
+
+    $('#btnAdvanceSearch').click(function () {
+      $("#modalAdvanceSearch").modal('show');
+    });
+  });
+</script> {{#if layoutVM.isLogged}} {{else}}
+<div class="modal fade" id="modalLogin" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="float: left; display: flex;">
+        <h4 class="modal-title" id="myModalLoginTitle" style="float: left; display: flex;">
+          Đăng nhập
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          ×</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12" style="border-right: 1px dotted #C2C2C2;padding-right: 30px;">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a id="tabLogIn" class="nav-link active" href="#Login" data-toggle="tab">Đăng nhập</a>
+              </li>
+              <li class="nav-item">
+                <a id="tabSignUp" class="nav-link" href="#Registration" data-toggle="tab">Đăng ký</a>
+              </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div class="tab-pane active" id="Login" style="padding: 20px;">
+                <form method="POST" action="/account/login">
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Email</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="email" class="form-control" name="email" placeholder="Hãy nhập email của bạn..." />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Mật khẩu</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required class="form-control" type="password" name="password" placeholder="Hãy nhập mật khẩu của bạn..." />
+                    </div>
+                  </div>
+
+                  {{#if layoutVM.captcha}}
+                  <p>{{{layoutVM.captcha}}}</p>
+                  {{/if}}
+
+                  <div style="margin: 0 auto; position: relative; text-align: center;width: 50%">
+                    <button type="submit" class="btn btn-primary col-md-12">Đăng nhập</button>
+                  </div>
+                </form>
+              </div>
+              <div class="tab-pane" id="Registration" style="padding: 20px;">
+                <form method="POST" action="/account/register">
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Họ và tên</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="text" class="form-control" name="name" placeholder="Hãy nhập họ và tên của bạn..." />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Email</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="email" class="form-control" name="email" placeholder="Hãy nhập email của bạn..." />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>SDT</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="text" class="form-control" name="phone" placeholder="Hãy nhập sdt của bạn..." value="{{phone}}" />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Ngày sinh</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="date" class="form-control" name="dob" placeholder="Hãy nhập ngày sinh của bạn..." value="{{dob}}" />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Địa chỉ</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="text" class="form-control" name="address" placeholder="Hãy nhập địa chỉ của bạn..." />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Mật khẩu</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="password" class="form-control" name="password" placeholder="Hãy nhập mật khẩu của bạn..." />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-3 entry_information">
+                      <label>Nhập lại mật khẩu</label>
+                    </div>
+                    <div class="col-md-9 entry_information">
+                      <input required type="password" class="form-control" name="repassword" placeholder="Hãy nhập lại mật khẩu của bạn..." />
+                    </div>
+                  </div>
+
+                  {{#if layoutVM.captcha}}
+                  <p>{{{layoutVM.captcha}}}</p>
+                  {{/if}}
+
+                  <div style="margin: 0 auto; position: relative; text-align: center;width: 50%">
+                    <button type="submit" class="btn btn-success col-md-12">Đăng kí</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Modal Login -->
+{{/if}}
+
+<!-- BEGIN Modal Advance Search -->
+<div class="modal fade" id="modalAdvanceSearch" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="float: left; display: flex;">
+        <h4 class="modal-title" style="float: left; display: flex;">
+          Tìm kiếm nâng cao
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          ×</button>
+      </div>
+      <div class="modal-body modal_information">
+        <form method="get" action="/search/advanded">
+          <div class="form-group row">
+            <div class="col-md-3 entry_information">
+              <label>Tiêu đề</label>
+            </div>
+            <div class="col-md-9 entry_information">
+              <input class="form-control" type="text" name="title" placeholder="Hãy nhập tên tựa sách, báo, ..." />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-3 entry_information">
+              <label>Tác giả</label>
+            </div>
+            <div class="col-md-9 entry_information">
+              <input class="form-control" type="text" name="author" placeholder="Hãy nhập tên tác giả" />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-3 entry_information">
+              <label>Nhà xuất bản</label>
+            </div>
+            <div class="col-md-9 entry_information">
+              <select class="form-control" name="id_manufacturer">
+                <option value="" selected hidden>Chọn nhà xuất bản</option>
+                {{#each layoutVM.manufacturer}}
+                <option value="{{this.id_manufacturer}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-3 entry_information">
+              <label>Thể loại</label>
+            </div>
+            <div class="col-md-9 entry_information">
+              <select class="form-control" name="id_class">
+                <option value="" selected hidden>Chọn thể loại sách</option>
+                {{#each layoutVM.type}}
+                <option value="{{this.id_class}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+
+          <div style="margin: 0 auto; position: relative; text-align: center;width: 100%">
+            <button type="submit" class="btn btn-primary col-md-12">
+              <span>
+                <img src="{{layoutVM.imageUrl}}/search.png" />
+                <span>Tìm kiếm</span>
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- END Modal Advance Search -->
+
+{{{block "pageJS"}}}
+
+</html>
