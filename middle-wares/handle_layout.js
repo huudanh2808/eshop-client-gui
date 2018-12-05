@@ -29,7 +29,6 @@ module.exports = (req, res, next) => {
                   isLogged: req.session.isLogged,
                   curUser: req.session.user,
                   countCart: totalInCart,
-                  imageUrl: config.imageConfig.url,
                   captcha: recaptcha.render()
             };
 

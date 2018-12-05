@@ -8,6 +8,7 @@ var orderRepo = require('../database/repos/orderRepo.js');
 var config = require('../config/config');
 var multer = require('multer');
 var path = require('path');
+var request = require('request');
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/resources')
@@ -426,7 +427,7 @@ router.post('/product_manage/upload', admin_restrict, (req, res, next) => {
             res.send(vm)
         } else {
             authorRepo.isExist(req.body.author).then(result => {
-                if (result[0].result == 0) {
+                if (result.length <= 0) {
                     authorRepo.getMaxId().then(maxId => {
                         var newAuthorId = parseInt(maxId[0].maxId) + 1;
                         authorRepo.add(newAuthorId, req.body.author).then(result => {
@@ -443,19 +444,19 @@ router.post('/product_manage/upload', admin_restrict, (req, res, next) => {
                                 productRepo.add(newProductId, product_name, decription, price,
                                     import_price, product_type, product_manu,
                                     newAuthorId, publish_date, in_stock).then(result => {
-                                    var vm = {
-                                        feedback: "Thêm sản phẩm mới thành công",
-                                        isSuccess: true
-                                    }
-                                    res.send(vm)
-                                }).catch(err => {
-                                    console.log("Error occurs when ADD new Product , err:" + err);
-                                    var vm = {
-                                        feedback: "Lỗi khi thêm mới sản phẩm",
-                                        isSuccess: false
-                                    }
-                                    res.send(vm)
-                                });
+                                        var vm = {
+                                            feedback: "Thêm sản phẩm mới thành công",
+                                            isSuccess: true
+                                        }
+                                        res.send(vm)
+                                    }).catch(err => {
+                                        console.log("Error occurs when ADD new Product , err:" + err);
+                                        var vm = {
+                                            feedback: "Lỗi khi thêm mới sản phẩm",
+                                            isSuccess: false
+                                        }
+                                        res.send(vm)
+                                    });
                             });
                         }).catch(err => {
                             console.log("Error occurs when ADD new author , err:" + err);
@@ -482,19 +483,19 @@ router.post('/product_manage/upload', admin_restrict, (req, res, next) => {
                         productRepo.add(newProductId, product_name, decription, price,
                             import_price, product_type, product_manu,
                             existedAuthorID, publish_date, in_stock).then(result => {
-                            var vm = {
-                                feedback: "Thêm sản phẩm mới thành công",
-                                isSuccess: true
-                            }
-                            res.send(vm)
-                        }).catch(err => {
-                            console.log("Error occurs when ADD new Product , err:" + err);
-                            var vm = {
-                                feedback: "Lỗi khi thêm mới sản phẩm",
-                                isSuccess: false
-                            }
-                            res.send(vm)
-                        });
+                                var vm = {
+                                    feedback: "Thêm sản phẩm mới thành công",
+                                    isSuccess: true
+                                }
+                                res.send(vm)
+                            }).catch(err => {
+                                console.log("Error occurs when ADD new Product , err:" + err);
+                                var vm = {
+                                    feedback: "Lỗi khi thêm mới sản phẩm",
+                                    isSuccess: false
+                                }
+                                res.send(vm)
+                            });
                     });
                 }
             });
@@ -529,19 +530,19 @@ router.post('/product_manage/edit', admin_restrict, (req, res, next) => {
                                 req.body.product_type, req.body.product_manu,
                                 newAuthorId, req.body.publish_date,
                                 req.body.in_stock, req.body.import_price).then(result => {
-                                var vm = {
-                                    feedback: "Cập nhật sản phẩm thành công",
-                                    isSuccess: true
-                                }
-                                res.send(vm)
-                            }).catch(err => {
-                                console.log("Error occurs when UPDATE PRODUCT , err:" + err);
-                                var vm = {
-                                    feedback: "Lỗi khi cập nhật sản phẩm",
-                                    isSuccess: false
-                                }
-                                res.send(vm)
-                            });
+                                    var vm = {
+                                        feedback: "Cập nhật sản phẩm thành công",
+                                        isSuccess: true
+                                    }
+                                    res.send(vm)
+                                }).catch(err => {
+                                    console.log("Error occurs when UPDATE PRODUCT , err:" + err);
+                                    var vm = {
+                                        feedback: "Lỗi khi cập nhật sản phẩm",
+                                        isSuccess: false
+                                    }
+                                    res.send(vm)
+                                });
                         }).catch(err => {
                             console.log("Error occurs when ADD new author , err:" + err);
                             var vm = {
@@ -559,21 +560,21 @@ router.post('/product_manage/edit', admin_restrict, (req, res, next) => {
                         req.body.product_type, req.body.product_manu,
                         existedAuthorID, req.body.publish_date,
                         req.body.in_stock, req.body.import_price).then(result => {
-                        console.log(result[0]);
+                            console.log(result[0]);
 
-                        var vm = {
-                            feedback: "Cập nhật sản phẩm thành công",
-                            isSuccess: true
-                        }
-                        res.send(vm)
-                    }).catch(err => {
-                        console.log("Error occurs when UPDATE PRODUCT , err:" + err);
-                        var vm = {
-                            feedback: "Lỗi khi cập nhật sản phẩm",
-                            isSuccess: false
-                        }
-                        res.send(vm)
-                    });
+                            var vm = {
+                                feedback: "Cập nhật sản phẩm thành công",
+                                isSuccess: true
+                            }
+                            res.send(vm)
+                        }).catch(err => {
+                            console.log("Error occurs when UPDATE PRODUCT , err:" + err);
+                            var vm = {
+                                feedback: "Lỗi khi cập nhật sản phẩm",
+                                isSuccess: false
+                            }
+                            res.send(vm)
+                        });
 
                 }
             });
@@ -614,21 +615,24 @@ router.post('/login', restrict_logged, restrict_admin_logged, (req, res) => {
                 username: req.body.username,
                 password: SHA256(req.body.password + req.body.username).toString()
             };
-
-            adminRepo.login(user).then(rows => {
-                if (rows.length > 0) {
-                    req.session.isAdmin = true;
-                    req.session.user = rows[0];
-
-                    res.redirect('/admin');
-                } else {
-                    res.render('admin/login', {
-                        isError: true,
-                        isErrorCaptcha: false,
-                        username: req.body.username
-                    });
+            console.log(user);
+            var api = `http://localhost:8888/admin/login?username=${user.username}&password=${user.password}`;
+            request(api, (error, response, body) => {
+                if (!error && response.statusCode == 200) {
+                    if (body != '') {
+                        req.session.isAdmin = true;
+                        req.session.user = body.username;
+                        res.redirect('/admin');
+                    }
+                    else {
+                        res.render('admin/login', {
+                            isError: true,
+                            isErrorCaptcha: false,
+                            username: req.body.username
+                        });
+                    }
                 }
-            });
+            })
         } else {
             res.render('admin/login', {
                 isError: false,
@@ -647,7 +651,7 @@ router.post('/logout', admin_restrict, (req, res) => {
     res.redirect('/');
 });
 
-router.get('/order_manage',admin_restrict, (req, res) => {
+router.get('/order_manage', admin_restrict, (req, res) => {
     var page = req.query.page;
     var url = '/admin' + req.url;
 

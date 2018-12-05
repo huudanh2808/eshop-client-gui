@@ -12,7 +12,7 @@
             {{#each products}}
             <div class="cart_product_row col-md-12 row">
                 <div class="cart_product_img col-md-2">
-                    <img src="{{../layoutVM.imageUrl}}/{{this.product.id_product}}.jpg" width="100%" alt="{{this.product.id_product}}.jpg">
+                    <img src="/resources/{{this.product.id_product}}.jpg" width="100%" alt="{{this.product.id_product}}.jpg">
                 </div>
                 <a href="/details/{{this.product.id_product}}" class="cart_product_info col-md-6">
                     <div class="cart_product_name">
@@ -81,6 +81,7 @@
         $('#noticeModal').on('hidden.bs.modal', function (e) {
             window.location.reload(true);
         });
+
         $('#updateItemForm').submit(function () {
             $(this).ajaxSubmit({
                 error: function (xhr) {
